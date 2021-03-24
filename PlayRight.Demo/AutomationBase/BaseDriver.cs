@@ -24,19 +24,13 @@ namespace PlayRight.Demo.AutomationBase
         [SetUp]
         protected async Task Navigate()
         {
-            await Task.Run(async () =>
-            {
-                await CurrentPage.GoToAsync("https://www.google.com", waitUntil: LifecycleEvent.Load);
-            });
+            await CurrentPage.GoToAsync("https://www.google.com", waitUntil: LifecycleEvent.Load);
         }
 
         [TearDown]
         protected async Task Flush()
         {
-            await Task.Run(async () =>
-            {
-                await Browser.CloseAsync();
-            });
+            await Browser.CloseAsync();
         }
 
         private async Task<IBrowser> GetBrowserAsync()
