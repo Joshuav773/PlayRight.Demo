@@ -13,4 +13,8 @@
     <PackageReference Include="PlaywrightSharp" Version="0.180.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Videos\" />
+  </ItemGroup>
+
 </Project>

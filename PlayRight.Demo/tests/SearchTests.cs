@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 
 namespace PlayRight.Demo.tests
 {
+    [TestFixture]
     public class SearchTests : BaseDriver
     {
         [Test]
         public async Task ICanClickTheSearchBar()
         {
-            await CurrentPage.ClickAsync("//input[name='q']");
+            //TODO: this should come from some page object i.e. HomePage.SearchBarLocator
+            var searchBarLoc = "xpath=//input[@name='q']";
+
+            await CurrentPage.ClickAsync(searchBarLoc);
+            await CurrentPage.TypeAsync(searchBarLoc, "Hey, i worked!");
+
+            await Task.Delay(2000);
         }
     }
 }

@@ -2,6 +2,8 @@
 using PlaywrightSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +15,21 @@ namespace PlayRight.Demo.AutomationBase
         protected static IBrowserContext Context { get; private set; }
         protected static IPage CurrentPage { get; private set; }
 
-        public BaseDriver()
+        private string _videosDir
+        {
+            get
+            {
+                var projectPath = AppDomain.CurrentDomain
+                    .GetAssemblies()
+                    .FirstOrDefault(x => x.FullName.Contains("PlayRight.Demo"))
+                    .Location;
+
+                var toRemove = projectPath.IndexOf("bin");
+                return $@"{ projectPath.Remove(toRemove) }Videos\";
+            }
+        }
+
+        protected BaseDriver()
         {
             if (Browser is null)
             {
@@ -30,6 +46,7 @@ namespace PlayRight.Demo.AutomationBase
         [TearDown]
         protected async Task Flush()
         {
+            await Context.CloseAsync();
             await Browser.CloseAsync();
         }
 
@@ -47,7 +64,21 @@ namespace PlayRight.Demo.AutomationBase
         private async Task InitComponents()
         {
             var browser =  GetBrowserAsync();
-            var context =  browser.Result.NewContextAsync();
+
+            var context =  browser.Result.NewContextAsync
+                (
+                    recordVideo: new RecordVideoOptions
+                    {
+                        Dir = _videosDir,
+
+                        Size = new ViewportSize
+                        {
+                            Width = 1920,
+                            Height = 1080
+                        }
+                    }
+                );
+
             var page    =  context.Result.NewPageAsync();
 
             await Task.WhenAll(browser, context, page);
